@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-x86_64:
+    name: Test x86-64 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            cc: gcc
+            nasm: nasm
+          - os: macos-latest
+            cc: clang
+            nasm: nasm
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm gcc make
+
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install nasm
+
+    - name: Build
+      run: |
+        make CC=${{ matrix.cc }}
+
+    - name: Run tests
+      run: |
+        make test
+
+    - name: Run benchmarks
+      run: |
+        make bench
+
+  test-sanitizers:
+    name: Test with sanitizers (Ubuntu)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm gcc make
+
+    - name: Build with AddressSanitizer
+      run: |
+        make clean
+        make ASAN=1
+
+    - name: Run tests with ASAN
+      run: |
+        make test
+
+  test-no-avx512:
+    name: Test without AVX-512
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm gcc make
+
+    - name: Build without AVX-512
+      run: |
+        make clean
+        make NO_AVX512=1
+
+    - name: Run tests
+      run: |
+        make test
+
+  test-debug:
+    name: Debug build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm gcc make
+
+    - name: Build debug
+      run: |
+        make clean
+        make DEBUG=1
+
+    - name: Run tests
+      run: |
+        make test
+
+  lint:
+    name: Code quality checks
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make
+
+    - name: Check C code formatting
+      run: |
+        # Simple check that files compile without warnings
+        make CC=gcc CFLAGS="-O2 -Wall -Wextra -Wpedantic -Werror -std=c11"

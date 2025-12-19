@@ -1,0 +1,35 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Executables
+test_parser
+test_api
+test_stringify
+bench
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Debugging
+*.dSYM/
+vgcore.*
+core
+*.log
+
+# Generated files
+*.d
+.depend
+
+# Temporary files
+*.tmp
+.*.tmp

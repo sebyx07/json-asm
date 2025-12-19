@@ -1,0 +1,100 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "age": 32,
+      "active": true,
+      "roles": ["admin", "user"],
+      "profile": {
+        "bio": "Software engineer passionate about performance optimization",
+        "location": "San Francisco, CA",
+        "website": "https://alice.example.com"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "age": 28,
+      "active": true,
+      "roles": ["user"],
+      "profile": {
+        "bio": "Full-stack developer and open source enthusiast",
+        "location": "New York, NY",
+        "website": null
+      }
+    },
+    {
+      "id": 3,
+      "name": "Charlie Brown",
+      "email": "charlie.brown@example.com",
+      "age": 45,
+      "active": false,
+      "roles": ["user", "moderator"],
+      "profile": {
+        "bio": "Systems architect with 20 years of experience",
+        "location": "Seattle, WA",
+        "website": "https://charlie-dev.example.com"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Diana Prince",
+      "email": "diana.prince@example.com",
+      "age": 35,
+      "active": true,
+      "roles": ["admin", "user", "moderator"],
+      "profile": {
+        "bio": "Security researcher and cryptography expert",
+        "location": "Washington, DC",
+        "website": "https://diana-security.example.com"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Edward Chen",
+      "email": "edward.chen@example.com",
+      "age": 29,
+      "active": true,
+      "roles": ["user"],
+      "profile": {
+        "bio": "Machine learning engineer specializing in NLP",
+        "location": "Boston, MA",
+        "website": null
+      }
+    }
+  ],
+  "metadata": {
+    "version": "2.1.0",
+    "generated_at": "2024-01-15T10:30:00Z",
+    "total_users": 5,
+    "active_users": 4,
+    "schema_version": 3
+  },
+  "settings": {
+    "pagination": {
+      "page_size": 20,
+      "max_page_size": 100
+    },
+    "features": {
+      "email_notifications": true,
+      "two_factor_auth": true,
+      "api_rate_limiting": true,
+      "maintenance_mode": false
+    },
+    "limits": {
+      "max_upload_size_mb": 50,
+      "max_api_requests_per_hour": 1000,
+      "session_timeout_minutes": 30
+    }
+  },
+  "tags": [
+    "production",
+    "v2",
+    "stable",
+    "tested",
+    "documented"
+  ]
+}
