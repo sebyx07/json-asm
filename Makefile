@@ -221,7 +221,7 @@ test: $(TEST_BINS)
 	@echo "All tests passed!"
 
 $(BUILD)/test_%: tests/test_%.c $(STATIC_LIB) | $(BUILD)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(STATIC_LIB) -lm
+	$(CC) $(CFLAGS) -o $@ $< $(STATIC_LIB) $(LDFLAGS) -lm
 
 # Benchmark
 .PHONY: bench
@@ -229,7 +229,7 @@ bench: $(BENCH_BIN)
 	$(BENCH_BIN)
 
 $(BENCH_BIN): $(BENCH_SRC) $(STATIC_LIB) | $(BUILD)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(STATIC_LIB) -lm
+	$(CC) $(CFLAGS) -o $@ $< $(STATIC_LIB) $(LDFLAGS) -lm
 
 # CPU feature detection tool
 .PHONY: detect
