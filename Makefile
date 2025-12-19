@@ -58,6 +58,9 @@ CFLAGS := -O3 -Wall -Wextra -Wpedantic -std=c11
 CFLAGS += -fPIC -I include
 CFLAGS += -fvisibility=hidden
 
+# Linker flags
+LDFLAGS :=
+
 # Architecture-specific flags
 ifeq ($(ARCH),x86-64)
     CFLAGS += -DJSON_ASM_X86_64
