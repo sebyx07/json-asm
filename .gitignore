@@ -6,11 +6,11 @@ build/
 *.dylib
 *.dll
 
-# Executables
-test_parser
-test_api
-test_stringify
-bench
+# Executables (in build directory)
+build/test_parser
+build/test_api
+build/test_stringify
+build/bench
 
 # Editor/IDE files
 .vscode/
