@@ -125,4 +125,5 @@ jobs:
     - name: Check C code formatting
       run: |
         # Simple check that files compile without warnings
-        make CC=gcc CFLAGS="-O2 -Wall -Wextra -Wpedantic -Werror -std=c11"
+        # Build with strict warnings as errors
+        make CFLAGS="-O2 -Wall -Wextra -Wpedantic -Werror -std=c11 -fPIC -I include -fvisibility=hidden -DJSON_ASM_X86_64"
