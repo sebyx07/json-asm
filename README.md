@@ -25,36 +25,32 @@ The fastest JSON parser and serializer, written in hand-optimized assembly (x86-
 
 ## Performance
 
-json-asm consistently outperforms other JSON libraries across architectures:
+Preliminary benchmark results on available hardware:
 
-### x86-64 (Intel i9-13900K)
+### Development System (AMD EPYC 7282 @ AVX2)
 
-| Library   | Parse (MB/s) | Stringify (MB/s) | Memory (bytes/node) |
-|-----------|--------------|------------------|---------------------|
-| json-asm  | 2,847        | 3,215            | 24                  |
-| yyjson    | 1,892        | 2,104            | 32                  |
-| simdjson  | 2,103        | N/A              | 40                  |
-| rapidjson | 956          | 1,287            | 48                  |
+Tested with 399-byte JSON document (44 values, nested objects/arrays):
 
-### ARM64 (Apple M3 Max)
+| Operation  | Throughput | Time per operation | Memory per value |
+|------------|------------|-------------------|------------------|
+| Parse      | ~290 MB/s  | 1.38 μs           | 24 bytes         |
+| Stringify  | ~275 MB/s  | 1.45 μs           | 24 bytes         |
 
-| Library   | Parse (MB/s) | Stringify (MB/s) | Memory (bytes/node) |
-|-----------|--------------|------------------|---------------------|
-| json-asm  | 2,456        | 2,892            | 24                  |
-| yyjson    | 1,678        | 1,892            | 32                  |
-| simdjson  | 1,834        | N/A              | 40                  |
-| rapidjson | 823          | 1,045            | 48                  |
+**Test Environment:**
+- CPU: AMD EPYC 7282 16-Core Processor
+- SIMD: AVX2 (256-bit vectors)
+- Compiler: GCC with -O3 -march=native
+- Test data: Small JSON with mixed types
 
-### ARM64 (AWS Graviton 3)
+**Note:** These are preliminary results from development hardware. Performance will vary significantly based on:
+- CPU architecture and generation
+- Available SIMD instructions (SSE4.2 vs AVX2 vs AVX-512)
+- JSON document size and structure
+- Memory bandwidth and cache characteristics
 
-| Library   | Parse (MB/s) | Stringify (MB/s) | Memory (bytes/node) |
-|-----------|--------------|------------------|---------------------|
-| json-asm  | 2,234        | 2,567            | 24                  |
-| yyjson    | 1,523        | 1,712            | 32                  |
-| simdjson  | 1,687        | N/A              | 40                  |
-| rapidjson | 756          | 934              | 48                  |
+The library automatically selects the best SIMD implementation for your CPU at runtime.
 
-*See [docs/benchmarks.md](docs/benchmarks.md) for methodology.*
+*Comprehensive benchmarks comparing against other JSON libraries coming soon.*
 
 ## Quick Start
 
@@ -134,20 +130,24 @@ Modern compilers are excellent, but JSON parsing has predictable patterns that b
 
 See [docs/architecture.md](docs/architecture.md) for technical details.
 
-## Comparison with yyjson
+## Design Approach
 
-[yyjson](https://github.com/ibireme/yyjson) is an excellent C library and a top performer. json-asm builds on similar design principles while going further:
+json-asm uses hand-optimized assembly to achieve high performance:
 
-| Aspect              | json-asm                         | yyjson                    |
-|---------------------|----------------------------------|---------------------------|
-| Implementation      | Native assembly (x86-64 + ARM64) | Pure C                    |
-| SIMD x86-64         | AVX-512/AVX2 hand-written        | Compiler auto-vectorization |
-| SIMD ARM64          | NEON/SVE hand-written            | Compiler auto-vectorization |
-| String scanning     | Custom SIMD routines             | Intrinsics where available |
-| Number parsing      | Branchless assembly              | C with hints              |
-| Memory layout       | 24 bytes/value                   | 32 bytes/value            |
+| Aspect              | json-asm                         |
+|---------------------|----------------------------------|
+| Implementation      | Native assembly (x86-64 + ARM64) |
+| SIMD x86-64         | AVX-512/AVX2/SSE4.2 hand-written |
+| SIMD ARM64          | NEON/SVE/SVE2 hand-written       |
+| String scanning     | Custom SIMD routines             |
+| Number parsing      | Branchless assembly algorithms   |
+| Memory layout       | Compact 24 bytes/value           |
 
-json-asm achieves 40-60% higher throughput by controlling every instruction in hot paths.
+By controlling every instruction in hot paths, assembly allows for:
+- Explicit SIMD instruction selection
+- Branchless algorithms to avoid misprediction penalties
+- Cache-line alignment and prefetching control
+- Register allocation optimization
 
 ## CPU Feature Detection
 
